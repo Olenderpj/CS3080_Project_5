@@ -1,20 +1,38 @@
+""" PJ OLENDER
+CS 3080 - Summer 2021
+Project 5 - Decorators
+Completed on 7/1/2021
+Description: Use decorators to calculate the efficiency of different functions and test this by running the code
+through 10,000 iterations. Tests different styles of functions based on the user's input/ selection.
+"""
+
+
 from functools import wraps
 from Iterator import Iterator
 from time import time
+
+ITERATIONS_TO_COMPLETE = 10000
 
 
 ###############################################################################
 # Timing Decorator
 ###############################################################################
+
+# Decorator method used to calculate the efficiency of a function - tested by running the function 10,000 times
+# Prints a formatted version of the results with the functions name and the time it took for 10k iterations
+# Returns the elapsed time it took to run the function, and the function itself.
 def timeIt(method):
+
     @wraps(method)
     def inner(*args, **kwargs):
         start = time()
-        method(*args, **kwargs)
+        for i in range(ITERATIONS_TO_COMPLETE + 1):
+            method(*args, **kwargs)
+
         end = time()
         elapsedTime = (end - start) * 1000
 
-        print("{0:<20}{1}{2:>10.3f}{3:}".format(method.__name__, ":", elapsedTime, " ms"))
+        print("{0:<20}{1}{2:>10.3f}{3:}".format(method.__name__, ": ", elapsedTime, " ms"))
         return elapsedTime * 1000
 
     return inner
@@ -23,6 +41,10 @@ def timeIt(method):
 ###############################################################################
 # Method Time Comparison
 ###############################################################################
+
+# Accepts an array of functions and calls each function using the timeit decorator
+# Stores the functions and their times in a dictionary and then sorts the dictionary based on the times
+# Prints the fastest function's name
 def timeCompare(methodsList, data):
     timeDict = {}
     for method in methodsList:
@@ -31,13 +53,9 @@ def timeCompare(methodsList, data):
 
     sortedDict = sorted(timeDict.items(), key=lambda x: x[1])
 
-    #print(sortedDict)
     fastestName, fastestTime = sortedDict[0]
 
-    print("{} is the fastest".format(fastestName))
-
-
-
+    print("{} is the best".format(fastestName))
 
 
 ###############################################################################
@@ -48,7 +66,6 @@ def stringConcatenator(words):
     phrase = ''
     for word in words:
         phrase += word + " "
-
     return phrase
 
 @timeIt
@@ -60,8 +77,6 @@ def testStringConcatenation():
     words = []
     for i in range(100, 200):
         words.append(str(i))
-
-    # TODO: COMPLETE- Run timeCompare on the two string methods
     timeCompare([stringConcatenator, stringJoiner], words)
     print()
 
@@ -70,7 +85,7 @@ def testStringConcatenation():
 # Test String Formatting
 ###############################################################################
 @timeIt
-def stringConv(phrase):
+def stringPercent(phrase):
     longPhrase = "%s %s %s %s %s" % (phrase, phrase, phrase, phrase, phrase)
 
     return longPhrase
@@ -87,16 +102,15 @@ def stringFormat(phrase):
 def testStringFormatting():
     phrase = " ".join([str(x) for x in range(10000)])
 
-    # TODO: COMPLETE- Run timeCompare on the three formatting methods
-
-    timeCompare([stringConv, stringF, stringFormat], phrase)
-
+    timeCompare([stringPercent, stringF, stringFormat], phrase)
     print()
 
 
 ###############################################################################
 # Test List Building
 ###############################################################################
+
+# Generates a value that is incremented by 1 every time the function is called
 def valueGenerator(maxValue):
     for i in range(maxValue):
         yield i + 1
@@ -108,10 +122,10 @@ def listRange(maxValue):
 
 @timeIt
 def listComprehension(max):
-    #TODO: double check if this is correct
     list = [value for value in range(max + 1)]
     return sum(list)
 
+# Creates an iterator object that will iterate by 1 value until it reaches the maximum specified value
 @timeIt
 def listIterator(max):
     total = 0
@@ -120,6 +134,7 @@ def listIterator(max):
         total += value
     return total
 
+# Uses the generator function to get the sum of numbers to a maximum specified value
 @timeIt
 def listGenerator(max):
     total = 0
@@ -138,8 +153,6 @@ def listExpression(max):
 
 def testListBuilding():
     max = 50
-
-    # TODO: Run timeCompare on the five list building methods
     timeCompare([listRange, listComprehension, listIterator, listGenerator, listExpression], max)
     print()
 

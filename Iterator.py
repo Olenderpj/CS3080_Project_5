@@ -1,3 +1,5 @@
+''' Iterator function that iterates by 1 until a maximum specified value'''
+
 class Iterator:
 
     # initialize max and current values
