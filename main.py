@@ -1,30 +1,32 @@
 from functools import wraps
-import Iterator
-
+from Iterator import Iterator
 from time import time
+
 
 ###############################################################################
 # Timing Decorator
 ###############################################################################
 def timeIt(method):
-	def inner():
-		start = time()
-		method()
-		end = time()
-		elapsedTime = (end - start) * 1000
+    def inner():
+        start = time()
+        method()
+        end = time()
+        elapsedTime = (end - start) * 1000
 
-		print("{0:<20}{1}{2:>10.3f}{3:}".format(method.__name__, ":", elapsedTime, " ms"))
-		return elapsedTime * 1000
+        print("{0:<20}{1}{2:>10.3f}{3:}".format(method.__name__, ":", elapsedTime, " ms"))
+        return elapsedTime * 1000
 
-	return inner
+    return inner
 
 
 ###############################################################################
 # Method Time Comparison
 ###############################################################################
 def timeCompare(methodsList, data):
+    pass
 
-	#TODO: do this later, see the doc.
+
+# TODO: do this later, see the doc.
 
 
 ###############################################################################
@@ -32,96 +34,101 @@ def timeCompare(methodsList, data):
 ###############################################################################
 @timeIt
 def stringConcatenator(words):
-	phrase = ''
-	for word in words:
-		phrase += word + " "
+    phrase = ''
+    for word in words:
+        phrase += word + " "
 
-	return phrase
+    return phrase
+
 
 @timeIt
 def stringJoiner(words):
-	return " ".join(words)
+    return " ".join(words)
 
 
 def testStringConcatenation():
-	words = []
-	for i in range(100, 200):
-		words.append(str(i))
+    words = []
+    for i in range(100, 200):
+        words.append(str(i))
 
-	# TODO: Run timeCompare on the two string methods
+    # TODO: Run timeCompare on the two string methods
 
-
-
-
-
-	print()
+    print()
 
 
 ###############################################################################
 # Test String Formatting
 ###############################################################################
 def stringConv(phrase):
-	longPhrase = "%s %s %s %s %s" % (phrase, phrase, phrase, phrase, phrase)
+    longPhrase = "%s %s %s %s %s" % (phrase, phrase, phrase, phrase, phrase)
 
-	return longPhrase
+    return longPhrase
 
 
 def stringF(phrase):
-
-	return f"{phrase} {phrase} {phrase} {phrase} {phrase}"
+    return f"{phrase} {phrase} {phrase} {phrase} {phrase}"
 
 
 def stringFormat(phrase):
-	return "{} {} {} {} {}".format(phrase, phrase, phrase, phrase, phrase)
+    return "{} {} {} {} {}".format(phrase, phrase, phrase, phrase, phrase)
 
 
 def testStringFormatting():
-	phrase = " ".join([str(x) for x in range(10000)])
+    phrase = " ".join([str(x) for x in range(10000)])
 
-	# TODO: Run timeCompare on the three formatting methods
+    # TODO: Run timeCompare on the three formatting methods
 
-	print()
+    print()
 
 
 ###############################################################################
 # Test List Building
 ###############################################################################
 
-# TODO: Build an Iterator Class/Object
+def valueGenerator(maxValue):
+    for i in range(maxValue):
+        yield i + 1
 
-# TODO: Build a Generator Function
 
 def listRange(maxValue):
-	rangeList = [*range(0, maxValue + 1)]
-	return sum(rangeList)
+    rangeList = [*range(0, maxValue + 1)]
+    return sum(rangeList)
 
 
 def listComprehension(max):
-	list = [value for value in range(max + 1)]
-	return sum(list)
+    list = [value for value in range(max + 1)]
+    return sum(list)
 
 
 def listIterator(max):
-	iterator = Iterator(max)
-	pass
+    total = 0
+    iterator = Iterator(max)
+    for value in iterator:
+        total += value
+    return total
 
 
 def listGenerator(max):
-	# TODO: Use a generator function to sum a range of values
-	pass
+    total = 0
+    numbers = valueGenerator(max)
+
+    for value in numbers:
+        total += value
+
+    return value
 
 
 def listExpression(max):
-	# TODO: Use a generator expression to sum a range of values
-	pass
+    total = sum(x + 1 for x in range(max))
+    return total
 
 
 def testListBuilding():
-	max = 50
+    max = 50
 
-	# TODO: Run timeCompare on the five list building methods
+    # TODO: Run timeCompare on the five list building methods
 
-	print()
+    print()
 
 
 ###############################################################################
@@ -129,33 +136,33 @@ def testListBuilding():
 ###############################################################################
 
 def menu():
-	menuItem = 1
-	print("*" * 60)
-	print("%d - Test String Concatenations" % menuItem)
-	menuItem += 1
-	print("%d - Test String Formatters" % menuItem)
-	menuItem += 1
-	print("%d - Test List Building" % menuItem)
-	menuItem += 1
-	print("%d - Quit" % menuItem)
-	print("*" * 60)
-	return promptForInteger(1, menuItem,
-							"Please make a selection between 1 and %d:" % menuItem,
-							"Your response must be number between 1 and %d, try again." % menuItem)
+    menuItem = 1
+    print("*" * 60)
+    print("%d - Test String Concatenations" % menuItem)
+    menuItem += 1
+    print("%d - Test String Formatters" % menuItem)
+    menuItem += 1
+    print("%d - Test List Building" % menuItem)
+    menuItem += 1
+    print("%d - Quit" % menuItem)
+    print("*" * 60)
+    return promptForInteger(1, menuItem,
+                            "Please make a selection between 1 and %d:" % menuItem,
+                            "Your response must be number between 1 and %d, try again." % menuItem)
 
 
 def promptForInteger(minimum, maximum, message, errorMessage):
-	try:
-		response = int(input(message + "\n"))
-	except:
-		response = -1
+    try:
+        response = int(input(message + "\n"))
+    except:
+        response = -1
 
-	while (response < minimum or response > maximum):
-		try:
-			response = int(input(errorMessage + "\n"))
-		except:
-			response = -1
-	return response
+    while (response < minimum or response > maximum):
+        try:
+            response = int(input(errorMessage + "\n"))
+        except:
+            response = -1
+    return response
 
 
 ###############################################################################
@@ -163,17 +170,17 @@ def promptForInteger(minimum, maximum, message, errorMessage):
 ###############################################################################
 response = 0
 while response != 4:
-	response = menu()
+    response = menu()
 
-	# Test String Concatenations
-	if response == 1:
-		testStringConcatenation()
-	# Test String Formatters
-	elif response == 2:
-		testStringFormatting()
-	# Test List Building
-	elif response == 3:
-		testListBuilding()
-	# Quit
-	elif response == 4:
-		print("Quitting!")
+    # Test String Concatenations
+    if response == 1:
+        testStringConcatenation()
+    # Test String Formatters
+    elif response == 2:
+        testStringFormatting()
+    # Test List Building
+    elif response == 3:
+        testListBuilding()
+    # Quit
+    elif response == 4:
+        print("Quitting!")
