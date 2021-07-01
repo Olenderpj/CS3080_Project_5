@@ -7,9 +7,9 @@ from time import time
 # Timing Decorator
 ###############################################################################
 def timeIt(method):
-    def inner():
+    def inner(*args, **kwargs):
         start = time()
-        method()
+        method(*args, **kwargs)
         end = time()
         elapsedTime = (end - start) * 1000
 
@@ -25,8 +25,8 @@ def timeIt(method):
 def timeCompare(methodsList, data):
     pass
 
+# TODO: passing an array of functions looks like this [funcname1, funcname2]
 
-# TODO: do this later, see the doc.
 
 
 ###############################################################################
@@ -45,7 +45,7 @@ def stringConcatenator(words):
 def stringJoiner(words):
     return " ".join(words)
 
-
+@timeIt
 def testStringConcatenation():
     words = []
     for i in range(100, 200):
@@ -84,22 +84,23 @@ def testStringFormatting():
 ###############################################################################
 # Test List Building
 ###############################################################################
-
+@timeIt
 def valueGenerator(maxValue):
     for i in range(maxValue):
         yield i + 1
 
-
+@timeIt
 def listRange(maxValue):
     rangeList = [*range(0, maxValue + 1)]
     return sum(rangeList)
 
-
+@timeIt
 def listComprehension(max):
+    #TODO: double check if this is correct
     list = [value for value in range(max + 1)]
     return sum(list)
 
-
+@timeIt
 def listIterator(max):
     total = 0
     iterator = Iterator(max)
@@ -107,7 +108,7 @@ def listIterator(max):
         total += value
     return total
 
-
+@timeIt
 def listGenerator(max):
     total = 0
     numbers = valueGenerator(max)
@@ -117,7 +118,7 @@ def listGenerator(max):
 
     return value
 
-
+@timeIt
 def listExpression(max):
     total = sum(x + 1 for x in range(max))
     return total
