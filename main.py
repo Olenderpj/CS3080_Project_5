@@ -7,6 +7,7 @@ from time import time
 # Timing Decorator
 ###############################################################################
 def timeIt(method):
+    @wraps(method)
     def inner(*args, **kwargs):
         start = time()
         method(*args, **kwargs)
@@ -23,9 +24,19 @@ def timeIt(method):
 # Method Time Comparison
 ###############################################################################
 def timeCompare(methodsList, data):
-    pass
+    timeDict = {}
+    for method in methodsList:
+        time = method(data)
+        timeDict[method.__name__] = time
 
-# TODO: passing an array of functions looks like this [funcname1, funcname2]
+    sortedDict = sorted(timeDict.items(), key=lambda x: x[1])
+
+    #print(sortedDict)
+    fastestName, fastestTime = sortedDict[0]
+
+    print("{} is the fastest".format(fastestName))
+
+
 
 
 
@@ -40,35 +51,35 @@ def stringConcatenator(words):
 
     return phrase
 
-
 @timeIt
 def stringJoiner(words):
     return " ".join(words)
 
-@timeIt
+
 def testStringConcatenation():
     words = []
     for i in range(100, 200):
         words.append(str(i))
 
-    # TODO: Run timeCompare on the two string methods
-
+    # TODO: COMPLETE- Run timeCompare on the two string methods
+    timeCompare([stringConcatenator, stringJoiner], words)
     print()
 
 
 ###############################################################################
 # Test String Formatting
 ###############################################################################
+@timeIt
 def stringConv(phrase):
     longPhrase = "%s %s %s %s %s" % (phrase, phrase, phrase, phrase, phrase)
 
     return longPhrase
 
-
+@timeIt
 def stringF(phrase):
     return f"{phrase} {phrase} {phrase} {phrase} {phrase}"
 
-
+@timeIt
 def stringFormat(phrase):
     return "{} {} {} {} {}".format(phrase, phrase, phrase, phrase, phrase)
 
@@ -76,7 +87,9 @@ def stringFormat(phrase):
 def testStringFormatting():
     phrase = " ".join([str(x) for x in range(10000)])
 
-    # TODO: Run timeCompare on the three formatting methods
+    # TODO: COMPLETE- Run timeCompare on the three formatting methods
+
+    timeCompare([stringConv, stringF, stringFormat], phrase)
 
     print()
 
@@ -84,7 +97,6 @@ def testStringFormatting():
 ###############################################################################
 # Test List Building
 ###############################################################################
-@timeIt
 def valueGenerator(maxValue):
     for i in range(maxValue):
         yield i + 1
@@ -128,7 +140,7 @@ def testListBuilding():
     max = 50
 
     # TODO: Run timeCompare on the five list building methods
-
+    timeCompare([listRange, listComprehension, listIterator, listGenerator, listExpression], max)
     print()
 
 
